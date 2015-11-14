@@ -2,17 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title></title>
-    <!--<link rel="stylesheet" href="/css/jquery-ui.css">-->
-    <!--<script src="/libs/jquery.min.js"></script>-->
-    <!--<script src="/libs/jquery-ui.min.js"></script>-->
-    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/vader/jquery-ui.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.2/angular.min.js"></script>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
+
+    <script src="/libs/jquery-1.9.1.js"></script>
+    <script src="/libs/bootstrap.min.js"></script>
+    <script src="/libs/angular.min.js"></script>
+    <script src="/libs/socket.io.js"></script>
+
     <script src="/js/login.js"></script>
 </head>
 <body>
-    <div>
+    <div class="text-center h1"><%= title %></div>
         <%- body %>
-    </div>
 </body>
 </html>

@@ -1,6 +1,32 @@
-<% layout('layout') -%>
-<div ng-app="loginApp" ng-controller="login_form">
-    <input type="text" ng-model="{{login}}" required>
-    <input type="password" ng-model="pass" required>
-</div>
-<label value="{{login}}"></label>
+<% layout('layout', {title: title}) -%>
+<form ng-app="loginApp" role="form" class="form-horizontal" novalidate>
+	<div ng-controller="login_form as lf">
+		<div class="form-group">
+			<label for="login" class="col-sm-2 control-label"><%= login %></label>
+			<div class="col-sm-4">
+				<input id="login" class="form-control" type="text" ng-model="lf.login" required/>
+			</div>
+			
+		</div>
+		<div class="form-group">
+			<label for="pass" class="col-sm-2 control-label"><%= pass %></label>
+			<div class="col-sm-4">
+				<input id="pass" class="form-control" type="password" ng-model="lf.pass" required/>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-4">
+				<div class="checkbox">
+					<label>
+						<input ng-model="lf.remember" type="checkbox"> <%= remember_me %>
+					</label>
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-4">
+				<input ng-click="lf.sendInfo()" ng-disabled="login == ''" class="btn btn-success" type="button" value="<%= button %>"/>
+			</div>
+		</div>
+	</div>
+</form>
