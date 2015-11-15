@@ -1,0 +1,13 @@
+<% layout('layout', {title: title}) -%>
+<script src="/js/game.js"></script>
+<div ng-app="gameApp">
+    <div ng-controller="gameController as gc">
+        <input ng-model="gc.user_id" ng-hide="true" value="<%= id %>" ng-initial/>
+        <div class="col-sm-offset-2 col-sm-4">
+            <input ng-click="gc.startNewGame()" class="btn btn-success" type="button" value="<%= start_game %>"/>
+        </div>
+        <div ng-show="started">
+
+        </div>
+    </div>
+</div>
