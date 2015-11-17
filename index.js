@@ -1,15 +1,13 @@
 /**
  * Created by dya on 11/6/2015.
  */
+var config = require('./config')
 var engine = require('ejs-locals');
 var express = require('express');
 var app = express();
-var server = app.listen(3002);
+var server = app.listen(config.start_port);
 var io = require('socket.io').listen(server);
-
-var global_id = 1;
-
-var db = require('db');
+var iodb = require('socket.io-client');
 
 app.engine('ejs', engine);
 app.set('view engine', 'ejs');
@@ -30,39 +28,43 @@ app.get('/login', function(req, res) {
 });
 
 app.get('/game', function(req, res){
-    if(req.query.token != undefined && req.query.token != null && req.query.token != '') {
-        var arg = req.query.token.split('_');
-        if(db.check_login(arg[0], arg[1])) {
-            res.render('game.ejs', {
-                title: 'game',
-                start_game: 'start game',
-                id: req.query.token
-            })
-        }
-    }
+    res.render('game.ejs', {
+        title: 'game',
+        start_game: 'start game',
+        id: req.query.token
+    })
 });
 
 app.use(express.static(__dirname + '/public'));
+
 
 io.sockets.on('connection', function (socket) {
     console.log('Client connected...');
     socket.on('send_login_data', function (data) {
         if(data.data.login != undefined && data.data.login != null &&
             data.data.pass != undefined && data.data.pass != null) {
-            console.log('-----------1----------')
-            console.log(db.check_login(data.login, data.pass))
-            var success = db.check_login(data.login, data.pass)
-            if(success) {
-                socket.emit('login_back', {
-                    login_state: success,
-                    token: data.data.login + '_' + data.data.pass + '_' + global_id++
-                });
-            }
-            else{
-                socket.emit('login_back', {
-                    login_state: success
-                });
-            }
+            console.log('-----------check login data----------' + data.data.login + '   ' + data.data.pass)
+            var socketdb = iodb.connect(config.db_address);
+            socketdb.on('send_checked_data', function(res){
+                console.log('data from db: ' + res.result);
+                if(res.result !== null){
+                    socket.emit('login_back', {
+                        login_state: true,
+                        token: res
+                    });
+                }
+                else{
+                    socket.emit('login_back', {
+                        login_state: false
+                    });
+                }
+            });
+            socketdb.emit('send_data_for_check', {
+                login: data.data.login,
+                pass: data.data.pass
+            });
+
+
         }
         else{
             socket.emit('login_back', {
@@ -82,4 +84,4 @@ io.sockets.on('connection', function (socket) {
 });
 
 var test = require('game_session')(1,2,3,4);
-console.log(test)
+//console.log(test)

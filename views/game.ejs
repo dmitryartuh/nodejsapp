@@ -1,13 +1,43 @@
 <% layout('layout', {title: title}) -%>
 <script src="/js/game.js"></script>
-<div ng-app="gameApp">
-    <div ng-controller="gameController as gc">
-        <input ng-model="gc.user_id" ng-hide="true" value="<%= id %>" ng-initial/>
-        <div class="col-sm-offset-2 col-sm-4">
-            <input ng-click="gc.startNewGame()" class="btn btn-success" type="button" value="<%= start_game %>"/>
+<div class="container-fluid">
+    <div class="row" ng-app="gameApp" ng-controller="gameController as gc">
+        <div class="col-sm-4">.col-sm-4</div>
+        <div class="col-sm-4">
+            <div id="row{{i}}" class="row" ng-repeat="i in [1, 2, 3] track by $index">
+                <button id="{{''+i+j}}" ng-click="gc.setZero(i, j)" class="col-sm-4 empty image" ng-repeat="j in [1, 2, 3] track by $index"></button>
+            </div>
         </div>
-        <div ng-show="started">
+        <div class="col-sm-4">.col-sm-4</div>
+</div>
 
-        </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function(){
+		var cw = $('.image').width();
+		$('.image').css({'height':cw+'px'});
+    });
+</script>
+
+<style>
+     .empty.image {background-image:
+            url(/images/empty.png);}
+     @@media (max-width: 768px) {.empty.image {background-image:
+            url(/images/empty.png);}}
+
+     .cross.image {background-image:
+                  url(/images/cross.png);}
+           @@media (max-width: 768px) {.cross.image {background-image:
+                  url(/images/cross.png);}}
+
+     .zero.image {background-image:
+                  url(/images/zero.png);}
+           @@media (max-width: 768px) {.zero.image {background-image:
+                  url(/images/zero.png);}}
+     .image {
+     background-size: 100% 100%;
+     height: 100%;
+     	}
+ </style>

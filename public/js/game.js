@@ -21,4 +21,8 @@ app.controller('gameController', ['$scope', function($scope){
     this.startNewGame = function() {
         this.socket.emit('user_connect', { id : this.user_id });
     };
+
+    this.setZero = function(i, j){
+        $('#' + i + j + '.image').removeClass('empty').addClass('cross');
+    }
 }]);
