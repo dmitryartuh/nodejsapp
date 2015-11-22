@@ -1,9 +1,0 @@
-{
-  "name": "application-name",
-  "version": "0.0.1",
-  "dependencies": {
-    "express": "^4.13.3",
-    "local-ejs": "1.0.2",
-    "socket.io": "~0.9.6"
-  }
-}
