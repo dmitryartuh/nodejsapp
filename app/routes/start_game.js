@@ -5,12 +5,23 @@ var auth = require('basic-auth');
 var express = require('express');
 var util = require('util');
 var router = express.Router();
+var wm = require('worker_manager');
+var db = require('db');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
     var user = auth(req);
-    console.log(util.inspect(user));
-    res.redirect('');
+        db.check_user(user, function(data){
+            if(data){
+                res.render('game.ejs', {
+                    title: 'Crosses & Zeroses!',
+                    url: wm.get_worker()
+                });
+            }
+            else{
+                res.redirect('/login');
+            }
+        });
 });
 
 module.exports = router;

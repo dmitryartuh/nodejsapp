@@ -74,6 +74,8 @@ loginApp.controller('login_form', ['$scope', '$http', '$location', 'Base64', fun
         $http({
             method: 'GET',
             url: '/startGame'
+        }).success(function(data){
+
         });
     }
 }]);

@@ -1,46 +1,70 @@
+var config = require('./config')
 var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var engine = require('ejs-locals');
-
-
 var app = express();
+var server = app.listen(config.start_port);
+var io = require('socket.io').listen(server);
+var manager = require('manager');
+var uf = require('user');
+var gf = require('game_session');
+var async = require('async');
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.engine('ejs', engine);
-app.set('view engine', 'ejs');
+var rooms = -1;
 
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+function get_room_number(){
+    rooms += 1;
+    return rooms;
+}
 
-//app.use('/', routes);
-//app.use('/users', users);
-
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+app.get('/isWorking', function(req, res){
+  res.sendStatus(200);
+  console.log('checked');
 });
 
-// error handlers
+io.sockets.on('connection', function (socket) {
+  console.log('Client connected... ' + socket.id);
+  manager.add_user(uf.create_user(socket.id, socket.handshake.query.login));
 
-app.use(function(err, req, res, next) {
-  res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: {}
+  socket.on('new_game', function(){
+    async.waterfall([
+        function(callback){
+            callback(manager.find_user(socket.id));
+        },
+        function(user, callback){
+          if(user != null){
+              callback(user, gs.find_wait_game());
+          }
+        },
+        function(user, game){
+          if(game != null){
+              game.add_user(user.id);
+              user.game_session = game.id;
+              socket.join('room' + game.id);
+              io.to('room' + game.id).emit('game_started', game);
+              console.log('started game ' + game.id + ' with ' + game.users_id[0] + ' and ' + user.id);
+          }
+          else{
+              var number = get_room_number();
+              manager.start_new_game(gf.create_new_game_session(number, user.id));
+              user.game_session = number;
+              console.log('created game ' + number + ' with ' + user.id);
+          }
+        }], function(err){
+            console.log('error with new_game');
+            socket.emit('error');
+        }
+    );
+  });
+
+  socket.on('disconnect', function(){
+
+  });
+
+  socket.on('update_state', function(){
+
+  });
+
+  socket.on('game_finished', function(){
+
   });
 });
-
-
-module.exports = app;
+console.log('worker started');

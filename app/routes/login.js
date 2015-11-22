@@ -19,7 +19,6 @@ router.get('/', function(req, res, next) {
 
 router.post('/', function(req, res, next){
     console.log('received data '+ util.inspect(req.body));
-
     db.check_user(req.body, function(data){
         console.log('callback - ' + data);
         res.write(JSON.stringify({
