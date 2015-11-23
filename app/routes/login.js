@@ -14,7 +14,7 @@ router.get('/', function(req, res, next) {
         pass: 'password',
         remember_me: 'remember me',
         title: 'Crosses & Zeroses!',
-        go: 'start game'});
+        go: 'join server'});
 });
 
 router.post('/', function(req, res, next){

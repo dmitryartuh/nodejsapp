@@ -1,41 +1,43 @@
 <% layout('layout', {title: title}) -%>
 <script src="/js/login.js"></script>
-<form ng-app="loginApp" role="form" class="form-horizontal" novalidate>
+<div ng-app="gameApp">
 	<div ng-controller="login_form as lf">
-		<div class="form-group">
-			<label for="login" class="col-sm-2 control-label"><%= login %></label>
-			<div class="col-sm-4">
-				<input id="login" name="login" class="form-control" type="text" ng-model="lf.login" required/>
+		<form role="form" class="form-horizontal" novalidate ng-hide="inlog">
+			<div class="form-group">
+				<label for="login" class="col-sm-2 control-label"><%= login %></label>
+				<div class="col-sm-4">
+					<input id="login" name="login" class="form-control" type="text" ng-model="lf.login" required/>
+				</div>
+
 			</div>
-			
-		</div>
-		<div class="form-group">
-			<label for="pass" class="col-sm-2 control-label"><%= pass %></label>
-			<div class="col-sm-4">
-				<input id="pass" class="form-control" type="password" ng-model="lf.pass" required/>
-			</div>
-		</div>
-		<div class="form-group">
-			<div class="col-sm-offset-2 col-sm-4">
-				<div class="checkbox">
-					<label>
-						<input ng-model="lf.remember" type="checkbox"> <%= remember_me %>
-					</label>
+			<div class="form-group">
+				<label for="pass" class="col-sm-2 control-label"><%= pass %></label>
+				<div class="col-sm-4">
+					<input id="pass" class="form-control" type="password" ng-model="lf.pass" required/>
 				</div>
 			</div>
-		</div>
-		<div class="form-group">
-			<div class="col-sm-offset-2 col-sm-4">
-				<input ng-click="lf.sendInfo()" ng-disabled="!lf.login.length" class="btn btn-success" type="button" value="<%= button %>"/>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-4">
+					<div class="checkbox">
+						<label>
+							<input ng-model="lf.remember" type="checkbox"> <%= remember_me %>
+						</label>
+					</div>
+				</div>
 			</div>
-		</div>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-4">
+					<input ng-click="lf.sendInfo()" ng-disabled="!lf.login.length" class="btn btn-success" type="button" value="<%= button %>"/>
+				</div>
+			</div>
+		</form>
 		<div class="form-group">
 			<div class="col-sm-offset-2 col-sm-4">
-
-					<input ng-click="lf.startNewGame()" ng-disabled="!inlog" class="btn btn-success" type="button" value="<%= go %>"/>
-
+				<input ng-click="lf.startNewGame()" ng-disabled="!inlog" class="btn btn-success" type="button" value="<%= go %>"/>
 			</div>
 		</div>
 	</div>
-</form>
-<%- include game.ejs %>
+	{{inlog}}</br>
+	.{{worker_url}}.
+	<%- include game.ejs %>
+</div>

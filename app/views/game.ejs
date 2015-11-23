@@ -1,25 +1,18 @@
 <script src="/js/game.js"></script>
-<div class="container-fluid">
-    <div class="row" ng-app="gameApp" ng-controller="gameController as gc">
-        <div class="col-sm-4">.col-sm-4</div>
-        <div class="col-sm-4">
-            <div id="row{{i}}" class="row" ng-repeat="i in [1, 2, 3] track by $index">
-                <button id="{{''+i+j}}" ng-click="gc.setZero(i, j)" class="col-sm-4 empty image" ng-repeat="j in [1, 2, 3] track by $index"></button>
+<div ng-controller="gameController as gc" ng-show="inlog">
+    <input ng-click="gc.start_game()" ng-disabled="worker_url == ''" class="btn btn-success" type="button" value="Start new Game"/>
+    <div class="container-fluid" ng-show="game_started">
+        <div class="row">
+            <div class="col-sm-4">.col-sm-4</div>
+            <div class="col-sm-4">
+                <div id="row{{i}}" class="row" ng-repeat="i in [1, 2, 3] track by $index">
+                    <button id="{{''+i+j}}" ng-click="gc.setZero(i, j)" class="col-sm-4 empty image" ng-repeat="j in [1, 2, 3] track by $index"></button>
+                </div>
             </div>
+            <div class="col-sm-4">.col-sm-4</div>
         </div>
-        <div class="col-sm-4">.col-sm-4</div>
-        {{gc.url}}
-</div>
-
     </div>
 </div>
-
-<script>
-    $(document).ready(function(){
-		var cw = $('.image').width();
-		$('.image').css({'height':cw+'px'});
-    });
-</script>
 
 <style>
      .empty.image {background-image:

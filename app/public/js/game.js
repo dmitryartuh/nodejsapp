@@ -1,28 +1,37 @@
 /**
  * Created by User on 15.11.2015.
  */
-var app = angular.module('gameApp', []);
 
-app.controller('gameController', ['$scope', function($scope){
-    $scope.started = false;
-    this.socket = io.connect('http://localhost:3002');
-    this.socket.on('connect_failed', function(){
-        console.log('Connection Failed');
-    });
+gameApp.controller('gameController', ['$scope', '$rootScope', '$timeout', function($scope, $rootScope, $timeout){
+    $scope.game_started = false;
+    this.start_game = function() {
+        if(this.socket != undefined && this.socket.connected) {
+            this.socket.disconnect();
+        }
+        this.socket = io.connect($rootScope.worker_url);
 
-    this.socket.on('connecting', function () {
-        console.log('connecting...');
-    });
 
-    this.socket.on('connect', function () {
-        console.log('connected!');
-    });
 
-    this.startNewGame = function() {
-        this.socket.emit('user_connect', { id : this.user_id });
-    };
 
-    this.setZero = function(i, j){
-        $('#' + i + j + '.image').removeClass('empty').addClass('cross');
+        this.socket.on('connect_failed', function () {
+
+        });
+
+        this.socket.on('connecting', function () {
+            console.log('connecting...');
+        });
+
+        this.socket.on('connect', function () {
+            $scope.game_started = true;
+            $scope.$apply();
+            $timeout(function() {
+                var cw = $('.image').width();
+                $('.image').css({'height':cw+'px'});
+            }, 100);
+        });
+
+        this.setZero = function (i, j) {
+            $('#' + i + j + '.image').removeClass('empty').addClass('cross');
+        }
     }
 }]);

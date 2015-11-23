@@ -13,13 +13,10 @@ router.get('/', function(req, res, next) {
     var user = auth(req);
         db.check_user(user, function(data){
             if(data){
-                res.render('game.ejs', {
-                    title: 'Crosses & Zeroses!',
-                    url: wm.get_worker()
-                });
+                res.end(wm.get_worker());
             }
             else{
-                res.redirect('/login');
+                res.end();
             }
         });
 });

@@ -1,9 +1,9 @@
 /**
  * Created by User on 13.11.2015.
  */
-var loginApp = angular.module('loginApp', []);
+var gameApp = angular.module('gameApp', []);
 
-loginApp.factory('Base64', function() {
+gameApp.factory('Base64', function() {
     var keyStr = 'ABCDEFGHIJKLMNOP' +
         'QRSTUVWXYZabcdef' +
         'ghijklmnopqrstuv' +
@@ -46,8 +46,9 @@ loginApp.factory('Base64', function() {
     }
 });
 
-loginApp.controller('login_form', ['$scope', '$http', '$location', 'Base64', function($scope, $http, $location, Base64) {
-
+gameApp.controller('login_form', ['$scope', '$http', '$location', 'Base64', '$rootScope', function($scope, $http, $location, Base64, $rootScope) {
+    $rootScope.inlog = false;
+    $rootScope.worker_url = '';
     this.sendInfo = function(){
         var data = {
             pass: this.pass,
@@ -59,10 +60,10 @@ loginApp.controller('login_form', ['$scope', '$http', '$location', 'Base64', fun
             data: data
         }).then(function successCallback(response) {
             if (response.data.login_state){
-                $scope.inlog = true;
+                $rootScope.inlog = true;
             }
             else{
-                $scope.inlog = false;
+                $rootScope.inlog = false;
             }
         }, function errorCallback(response) {
             console.log('error');
@@ -75,7 +76,7 @@ loginApp.controller('login_form', ['$scope', '$http', '$location', 'Base64', fun
             method: 'GET',
             url: '/startGame'
         }).success(function(data){
-
+            $rootScope.worker_url = data;
         });
-    }
+    };
 }]);
