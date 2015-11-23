@@ -12,6 +12,9 @@
     "ejs": "~2.3.3",
     "express": "~4.13.1",
     "morgan": "~1.6.1",
-    "serve-favicon": "~2.3.0"
+    "serve-favicon": "~2.3.0",
+    "basic-auth" : "1.0.3",
+    "ejs-locals" : "1.0.2",
+    "util": "0.10.3"
   }
 }
