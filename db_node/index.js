@@ -4,7 +4,6 @@
 var config = require('./config')
 var express = require('express');
 var util = require('util');
-var async = require('async');
 var app = express();
 var server = app.listen(config.start_port);
 var io = require('socket.io').listen(server);

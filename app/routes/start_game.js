@@ -11,9 +11,14 @@ var db = require('db');
 /* GET home page. */
 router.get('/', function(req, res, next) {
     var user = auth(req);
+    user.login = user.name;
+    console.log('get worker url by ' + util.inspect(user));
         db.check_user(user, function(data){
+            console.log('check auth - ' + data)
             if(data){
-                res.end(wm.get_worker());
+                var worker_url = wm.get_worker();
+                console.log('return worker url - ' + worker_url);
+                res.end(worker_url);
             }
             else{
                 res.end();
