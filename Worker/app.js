@@ -30,6 +30,8 @@ io.sockets.on('connection', function (socket) {
         socket.emit('double_connect');
         return;
     }
+    console.log('all users ' + manager.all().length);
+    console.log('free users ' + manager.free().length);
 
   socket.on('new_game', function(){
     async.waterfall([
@@ -46,6 +48,7 @@ io.sockets.on('connection', function (socket) {
               game.add_user(user.id);
               user.game_session = game.id;
               socket.join('room' + game.id);
+              manager.remove_wait_user(user.id);
               io.to('room' + game.id).emit('started_new_game', game);
               console.log('started game ' + game.id + ' with ' + game.users_id[0] + ' and ' + user.id);
           }
@@ -67,6 +70,8 @@ io.sockets.on('connection', function (socket) {
   socket.on('disconnect', function(){
         console.log('Client disconnected... ' + socket.id);
       manager.remove_user(socket.id);
+      console.log('all users ' + manager.all().length);
+      console.log('free users ' + manager.free().length);
   });
 
   socket.on('update_state', function(data){
@@ -74,22 +79,29 @@ io.sockets.on('connection', function (socket) {
       var set_step_res = game.set_step(data);
       if(set_step_res){
           var step_res = game.next_step();
-          if(!step_res){
-                var winner_id = game.get_winner();
-                var losser_id = game.get_losser();
-              console.log('winner - ' + winner_id);
-              console.log('losser - ' + losser_id);
-              var winner = manager.find_user(winner_id);
-              var losser = manager.find_user(losser_id);
-              winner.socket.emit('win');
-              losser.socket.emit('lost');
+          if(!step_res && game.finished) {
+              if(game.winner_count > 1){
+                  io.to('room' + game.id).emit('draw');
+              }
+              else {
+                  var winner_id = game.get_winner();
+                  var losser_id = game.get_losser();
+                  console.log('winner - ' + winner_id);
+                  console.log('losser - ' + losser_id);
+                  var winner = manager.find_user(winner_id);
+                  var losser = manager.find_user(losser_id);
+                  winner.socket.emit('won');
+                  losser.socket.emit('lost');
+              }
+
+              manager.finished_game(game.id);
           }
           else{
               io.to('room' + game.id).emit('update', game);
           }
       }
       else{
-          console.log('set next step erro');
+          console.log('set next step error');
           socket.emit('error');
       }
 

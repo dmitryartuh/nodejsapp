@@ -1,6 +1,9 @@
 <script src="/js/game.js"></script>
 <div ng-controller="gameController as gc" ng-show="inlog">
-    <input ng-click="gc.start_game()" ng-disabled="worker_url == ''" class="btn btn-success" type="button" value="Start new Game"/>
+	<div ng-hide="gc.message == ''">
+		<h3>Result - <span class="label label-default">{{gc.message}}</span></h3>
+	</div>{{wait}}
+    <input ng-click="gc.start_game()" ng-disabled="game_started || wait || worker_url == ''" class="btn btn-success" type="button" value="Start new Game"/>
     <div class="container-fluid" ng-show="game_started">
         <div class="row">
             <div class="col-sm-4">.col-sm-4</div>

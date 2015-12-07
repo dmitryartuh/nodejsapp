@@ -4,19 +4,23 @@
 
 gameApp.controller('gameController', ['$scope', '$rootScope', '$timeout', function($scope, $rootScope, $timeout){
     $scope.game_started = false;
-    this.start_game = function() {
+    $scope.wait = false;
+	this.message = '';
+	this.connected = false;
+	this.connect = function(){
 		var gc = this;
-        if(this.socket === undefined) {
-            this.socket = io.connect($rootScope.worker_url);
-        }
-        
-        this.socket.on('connect_failed', function () {
-
-        });
+        this.socket = io.connect($rootScope.worker_url);
+        this.connected = true;
 
         this.socket.on('connecting', function () {
             console.log('connecting...');
         });
+		
+		this.socket.on('disconnect', function(){
+			console.log('disconnected');
+			$scope.game_started = false;
+			gc.connected = false;
+		});
 		
 		this.socket.on('wait_partner', function(data) {
 			console.log(data);
@@ -27,15 +31,18 @@ gameApp.controller('gameController', ['$scope', '$rootScope', '$timeout', functi
 		});
 		
 		this.socket.on('won', function(data){
-			$scope.game_started = false;
-			$scope.$apply();
 			console.log('won');
+			gc.game_finished(true);
+		});
+		
+		this.socket.on('draw', function(data){
+			console.log('draw');
+			gc.game_finished(false);
 		});
 		
 		this.socket.on('lost', function(data){
-			$scope.game_started = false;
-			$scope.$apply();
 			console.log('lost');
+			gc.game_finished(false);
 		});
 
         this.socket.on('started_new_game', function (game) {
@@ -56,12 +63,37 @@ gameApp.controller('gameController', ['$scope', '$rootScope', '$timeout', functi
 			if(game.current_user == gc.socket.id){
 				gc.step = true;
 			}
+			gc.game = game;
+			
 			gc.updateState(game.state);
 		});
-		
+	};
+    this.start_game = function() {
+		if($scope.wait){
+			return;
+		}
+		$scope.wait = true;
+		$.each($('.image'), function(key, value){
+			$(value).removeClass('zero cross empty').addClass('empty');
+		});
+        if(!this.connected){
+			this.connect();
+		}
+		this.message = '';
 		this.socket.emit('new_game');
     };
 	
+	this.game_finished = function(value){
+		if(value){
+			this.message = 'Won! Nice work!';
+		}
+		else {
+			this.message = 'Loser!';
+		}
+		$scope.game_started = false;
+		$scope.wait = false;
+		$scope.$apply();
+	}
 	
 	this.setZero = function (i, j) {
 		if(this.step && $scope.game_started) {
