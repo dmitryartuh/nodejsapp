@@ -8,7 +8,7 @@ var engine = require('ejs-locals');
 
 //var routes = require('./routes/index');
 //var users = require('./routes/users');
-var login = require('./routes/login');
+var game = require('./routes/game');
 var start_game = require('./routes/start_game');
 
 var app = express();
@@ -30,7 +30,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //app.use('/', routes);
 //app.use('/users', users);
-app.use('/login', login);
+app.use('/game', game);
 app.use('/startGame', start_game);
 
 // catch 404 and forward to error handler

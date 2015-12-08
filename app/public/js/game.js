@@ -2,7 +2,7 @@
  * Created by User on 15.11.2015.
  */
 
-gameApp.controller('gameController', ['$scope', '$rootScope', '$timeout', function($scope, $rootScope, $timeout){
+gameApp.controller('gameController', ['$window', '$scope', '$rootScope', '$timeout', function($window, $scope, $rootScope, $timeout){
     $scope.game_started = false;
     $scope.wait = false;
 	this.message = '';
@@ -20,10 +20,18 @@ gameApp.controller('gameController', ['$scope', '$rootScope', '$timeout', functi
 			console.log('disconnected');
 			$scope.game_started = false;
 			gc.connected = false;
+			$scope.$apply();
+			alert('something went wrong');
+			$window.location.reload();
 		});
 		
 		this.socket.on('wait_partner', function(data) {
 			console.log(data);
+		});
+		
+		this.socket.on('error', function(data) {
+			alert('something went wrong');
+			$window.location.reload();
 		});
 		
 		this.socket.on('double_connect', function(data){
