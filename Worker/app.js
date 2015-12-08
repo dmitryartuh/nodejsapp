@@ -69,6 +69,12 @@ io.sockets.on('connection', function (socket) {
 
   socket.on('disconnect', function(){
         console.log('Client disconnected... ' + socket.id);
+      var lost_user = manager.find_user(socket.id);
+      var game = manager.find_game(lost_user.game_session);
+      if(game != null){
+          io.to('room' + game.id).emit('won', ', partner got away!');
+      }
+
       manager.remove_user(socket.id);
       console.log('all users ' + manager.all().length);
       console.log('free users ' + manager.free().length);
@@ -90,7 +96,7 @@ io.sockets.on('connection', function (socket) {
                   console.log('losser - ' + losser_id);
                   var winner = manager.find_user(winner_id);
                   var losser = manager.find_user(losser_id);
-                  winner.socket.emit('won');
+                  winner.socket.emit('won', '');
                   losser.socket.emit('lost');
               }
 

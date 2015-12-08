@@ -40,7 +40,8 @@ gameApp.controller('gameController', ['$window', '$scope', '$rootScope', '$timeo
 		
 		this.socket.on('won', function(data){
 			console.log('won');
-			gc.game_finished(true);
+			
+			gc.game_finished(true, data);
 		});
 		
 		this.socket.on('draw', function(data){
@@ -91,9 +92,14 @@ gameApp.controller('gameController', ['$window', '$scope', '$rootScope', '$timeo
 		this.socket.emit('new_game');
     };
 	
-	this.game_finished = function(value){
+	this.game_finished = function(value, data){
 		if(value){
-			this.message = 'Won! Nice work!';
+			if(data !== undefined && data !== null) {
+				this.message = 'Won! Nice work!' + data;
+			}
+			else {
+				this.message = 'Won! Nice work!';
+			}
 		}
 		else {
 			this.message = 'Loser!';
